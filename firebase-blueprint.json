@@ -1,0 +1,263 @@
+{
+  "entities": {
+    "UserPublicProfile": {
+      "title": "UserPublicProfile",
+      "description": "Non-PII collaborator profile visible to authenticated teammates.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "photoURL": { "type": "string", "maxLength": 500 },
+        "jobTitle": { "type": "string", "maxLength": 80 },
+        "bio": { "type": "string", "maxLength": 400 },
+        "themePreference": { "type": "string", "enum": ["light", "dark", "system"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "displayName", "photoURL", "jobTitle", "bio", "themePreference", "createdAt", "updatedAt"]
+    },
+    "UserPrivateInfo": {
+      "title": "UserPrivateInfo",
+      "description": "Private user PII and notification settings strictly isolated to the account owner.",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "minLength": 3, "maxLength": 254 },
+        "notifyAssignments": { "type": "boolean" },
+        "notifyDeadlines": { "type": "boolean" },
+        "notifyMentions": { "type": "boolean" },
+        "notifyComments": { "type": "boolean" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email", "notifyAssignments", "notifyDeadlines", "notifyMentions", "notifyComments", "updatedAt"]
+    },
+    "Workspace": {
+      "title": "Workspace",
+      "description": "Team workspace isolating projects, tasks, channels, and activity.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "slug": { "type": "string", "minLength": 2, "maxLength": 60, "pattern": "^[a-z0-9\\-]+$" },
+        "description": { "type": "string", "maxLength": 400 },
+        "ownerId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "accentColor": { "type": "string", "enum": ["indigo", "emerald", "amber", "rose", "sky", "slate"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "slug", "description", "ownerId", "accentColor", "createdAt", "updatedAt"]
+    },
+    "WorkspaceMember": {
+      "title": "WorkspaceMember",
+      "description": "Authoritative workspace membership and role binding with deterministic ID workspaceId_userId.",
+      "type": "object",
+      "properties": {
+        "workspaceId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "role": { "type": "string", "enum": ["owner", "admin", "member"] },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "email": { "type": "string", "minLength": 3, "maxLength": 254 },
+        "photoURL": { "type": "string", "maxLength": 500 },
+        "invitationId": { "type": "string", "maxLength": 128 },
+        "joinedAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["workspaceId", "userId", "role", "displayName", "email", "photoURL", "invitationId", "joinedAt", "updatedAt"]
+    },
+    "Invitation": {
+      "title": "Invitation",
+      "description": "Workspace invitation addressed to an invitee email.",
+      "type": "object",
+      "properties": {
+        "workspaceId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "workspaceName": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "inviteeEmail": { "type": "string", "minLength": 3, "maxLength": 254 },
+        "role": { "type": "string", "enum": ["admin", "member"] },
+        "status": { "type": "string", "enum": ["pending", "accepted", "declined", "revoked"] },
+        "invitedBy": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "invitedByName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["workspaceId", "workspaceName", "inviteeEmail", "role", "status", "invitedBy", "invitedByName", "createdAt", "updatedAt"]
+    },
+    "Project": {
+      "title": "Project",
+      "description": "Project within a workspace tracking owner, deadline, priority, and progress.",
+      "type": "object",
+      "properties": {
+        "workspaceId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "name": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "key": { "type": "string", "minLength": 2, "maxLength": 6, "pattern": "^[A-Z0-9]+$" },
+        "description": { "type": "string", "maxLength": 1500 },
+        "ownerId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "ownerName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "status": { "type": "string", "enum": ["active", "on_hold", "completed", "archived"] },
+        "priority": { "type": "string", "enum": ["low", "medium", "high", "urgent"] },
+        "startDate": { "type": "string", "maxLength": 20 },
+        "deadline": { "type": "string", "maxLength": 20 },
+        "progress": { "type": "number" },
+        "taskCounter": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["workspaceId", "name", "key", "description", "ownerId", "ownerName", "status", "priority", "startDate", "deadline", "progress", "taskCounter", "createdAt", "updatedAt"]
+    },
+    "Task": {
+      "title": "Task",
+      "description": "Task item inside a project supporting Kanban status, assignments, labels, and subtasks.",
+      "type": "object",
+      "properties": {
+        "workspaceId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "projectId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "taskKey": { "type": "string", "minLength": 2, "maxLength": 20 },
+        "title": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "description": { "type": "string", "maxLength": 4000 },
+        "status": { "type": "string", "enum": ["todo", "in_progress", "in_review", "done"] },
+        "priority": { "type": "string", "enum": ["low", "medium", "high", "urgent"] },
+        "assigneeId": { "type": "string", "maxLength": 128 },
+        "assigneeName": { "type": "string", "maxLength": 80 },
+        "reporterId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "reporterName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "dueDate": { "type": "string", "maxLength": 20 },
+        "labels": { "type": "array" },
+        "subtasks": { "type": "array" },
+        "order": { "type": "number" },
+        "isMilestone": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["workspaceId", "projectId", "taskKey", "title", "description", "status", "priority", "assigneeId", "assigneeName", "reporterId", "reporterName", "dueDate", "labels", "subtasks", "order", "isMilestone", "createdAt", "updatedAt"]
+    },
+    "Comment": {
+      "title": "Comment",
+      "description": "Task discussion comment with @mentions support.",
+      "type": "object",
+      "properties": {
+        "workspaceId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "projectId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "taskId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "authorId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "authorName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "authorPhotoURL": { "type": "string", "maxLength": 500 },
+        "content": { "type": "string", "minLength": 1, "maxLength": 2000 },
+        "mentions": { "type": "array" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["workspaceId", "projectId", "taskId", "authorId", "authorName", "authorPhotoURL", "content", "mentions", "createdAt", "updatedAt"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Real-time team chat message scoped to a workspace channel.",
+      "type": "object",
+      "properties": {
+        "workspaceId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "channelId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "channelName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "authorId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "authorName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "authorPhotoURL": { "type": "string", "maxLength": 500 },
+        "content": { "type": "string", "minLength": 1, "maxLength": 2000 },
+        "mentions": { "type": "array" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["workspaceId", "channelId", "channelName", "authorId", "authorName", "authorPhotoURL", "content", "mentions", "createdAt", "updatedAt"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "In-app notification addressed to a specific user.",
+      "type": "object",
+      "properties": {
+        "workspaceId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "actorId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "actorName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "type": { "type": "string", "enum": ["assignment", "deadline", "update", "mention", "invitation"] },
+        "title": { "type": "string", "minLength": 1, "maxLength": 140 },
+        "message": { "type": "string", "minLength": 1, "maxLength": 400 },
+        "link": { "type": "string", "maxLength": 200 },
+        "isRead": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["workspaceId", "userId", "actorId", "actorName", "type", "title", "message", "link", "isRead", "createdAt"]
+    },
+    "ActivityLog": {
+      "title": "ActivityLog",
+      "description": "Immutable workspace audit and collaboration activity event.",
+      "type": "object",
+      "properties": {
+        "workspaceId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "projectId": { "type": "string", "maxLength": 128 },
+        "taskId": { "type": "string", "maxLength": 128 },
+        "actorId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "actorName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "action": { "type": "string", "minLength": 1, "maxLength": 60 },
+        "targetTitle": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "details": { "type": "string", "maxLength": 300 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["workspaceId", "projectId", "taskId", "actorId", "actorName", "action", "targetTitle", "details", "createdAt"]
+    },
+    "ChannelRead": {
+      "title": "ChannelRead",
+      "description": "Per-user persistent read cursor for workspace discussion channels.",
+      "type": "object",
+      "properties": {
+        "workspaceId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "channelId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "lastReadAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["workspaceId", "channelId", "lastReadAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserPublicProfile" },
+      "description": "Public collaborator display profiles (no PII)."
+    },
+    "/users/{userId}/private/{docId}": {
+      "schema": { "$ref": "#/entities/UserPrivateInfo" },
+      "description": "Private user PII and notification preferences."
+    },
+    "/users/{userId}/channelReads/{readId}": {
+      "schema": { "$ref": "#/entities/ChannelRead" },
+      "description": "Owner-only persistent channel unread message cursors."
+    },
+    "/workspaces/{workspaceId}": {
+      "schema": { "$ref": "#/entities/Workspace" },
+      "description": "Workspace master records."
+    },
+    "/workspaceMembers/{memberId}": {
+      "schema": { "$ref": "#/entities/WorkspaceMember" },
+      "description": "Authoritative workspace membership records keyed as {workspaceId}_{userId}."
+    },
+    "/invitations/{invitationId}": {
+      "schema": { "$ref": "#/entities/Invitation" },
+      "description": "Workspace membership invitations."
+    },
+    "/projects/{projectId}": {
+      "schema": { "$ref": "#/entities/Project" },
+      "description": "Workspace-scoped projects."
+    },
+    "/tasks/{taskId}": {
+      "schema": { "$ref": "#/entities/Task" },
+      "description": "Project-scoped tasks."
+    },
+    "/comments/{commentId}": {
+      "schema": { "$ref": "#/entities/Comment" },
+      "description": "Task comments."
+    },
+    "/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/Message" },
+      "description": "Workspace channel chat messages."
+    },
+    "/notifications/{notificationId}": {
+      "schema": { "$ref": "#/entities/Notification" },
+      "description": "User-scoped notifications."
+    },
+    "/activityLogs/{logId}": {
+      "schema": { "$ref": "#/entities/ActivityLog" },
+      "description": "Immutable workspace activity feed."
+    }
+  }
+}

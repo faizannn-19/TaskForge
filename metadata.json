@@ -1,0 +1,6 @@
+{
+  "name": "TaskForge",
+  "description": "Full-stack project management and team collaboration platform with real-time Kanban boards, workspaces, team chat, calendar, and analytics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
